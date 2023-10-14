@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Spectre.Console;
 using Stryker.Core.Mutants;
 using Stryker.Core.Options;
@@ -95,7 +97,17 @@ public class HtmlReporter : IReporter
         // This reporter does not currently report when the mutation test run starts
     }
 
-    private void OpenReportInBrowser(string reportPath) => _browser.Open(reportPath);
+    private Task OpenReportInBrowser(string reportPath)
+    {
+        var taskA = new Task(() =>
+        {
+            Thread.Sleep(5000);
+            _browser.Open(reportPath);
+        });
+        taskA.Start();
+
+        return taskA;
+    }
 
     private string BuildReportPath()
     {

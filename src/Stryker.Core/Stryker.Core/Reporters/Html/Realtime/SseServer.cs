@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Stryker.Core.Reporters.Html.Realtime
 {
     public class SseServer : ISseServer
     {
-        public bool IsClientConnected { get; private set; }
+        public bool IsClientConnected => _writers.Any();
         public int Port { get; set; }
 
         private readonly HttpListener _listener;
@@ -47,7 +48,6 @@ namespace Stryker.Core.Reporters.Html.Realtime
             while (_listener.IsListening)
             {
                 var context = await _listener.GetContextAsync();
-                IsClientConnected = true;
                 var response = context.Response;
                 response.ContentType = "text/event-stream";
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -60,7 +60,6 @@ namespace Stryker.Core.Reporters.Html.Realtime
                 _writers.Add(writer);
                 ClientConnected?.Invoke(this, EventArgs.Empty);
             }
-            IsClientConnected = false;
         }
 
         public void SendEvent<T>(SseEvent<T> @event)

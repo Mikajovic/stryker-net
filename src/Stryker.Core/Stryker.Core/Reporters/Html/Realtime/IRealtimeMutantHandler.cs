@@ -5,7 +5,6 @@ namespace Stryker.Core.Reporters.Html.Realtime;
 
 public interface IRealtimeMutantHandler
 {
-    void QueueMutantForReporting(Mutant mutant);
     public int Port { get; }
 
     /// <summary>
