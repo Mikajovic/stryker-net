@@ -4,6 +4,7 @@ namespace Stryker.Core.Reporters.Html.Realtime;
 
 public interface ISseServer
 {
+    bool IsClientConnected { get; }
     public int Port { get; set; }
 
     public void OpenSseEndpoint();
